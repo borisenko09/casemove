@@ -398,7 +398,7 @@ emitterAccount.on(
         if (returnValue == undefined) {
           setValue(
             'pricing.currency',
-            currencyCodes?.[user?.wallet?.currency] || 'USD'
+            currencyCodes?.[user?.wallet?.currency ?? 1] || 'USD'
           );
         }
       });
@@ -473,7 +473,7 @@ emitterAccount.on(
 
       // Run the timeout
       let error = new Promise((resolve, _reject) => {
-        user.once('error', (error) => {
+        user.once('error', (error: any) => {
           if (error == 'Error: LoggedInElsewhere') {
             resolve('error');
           }

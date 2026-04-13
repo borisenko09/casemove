@@ -1,13 +1,13 @@
 {
   "name": "casemove",
   "productName": "casemove",
-  "version": "2.3.5",
+  "version": "2.4.0",
   "description": "Counter-Strike 2 Storage unit manager that helps you move stuff. ",
   "main": "./dist/main/main.js",
   "author": {
     "name": "Nombers",
     "email": "casemovenombers@gmail.com",
-    "url": "https://github.com/nombersDev/casemove"
+    "url": "https://github.com/borisenko09/casemove"
   },
   "scripts": {
     "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",

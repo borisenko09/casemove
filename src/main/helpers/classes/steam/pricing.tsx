@@ -1,37 +1,12 @@
 import { getValue, setValue } from './settings';
 
-const axios = require('axios');
-require('dotenv').config();
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
 const pricingEmitter = new MyEmitter();
 
-// Get latest prices, if fail use backup
-
-async function getPricesBackup(cas) {
-  const pricesBackup = require('./backup/prices.json');
-  cas.setPricing(pricesBackup);
-}
-async function getPrices(cas) {
-  const url = 'https://cdn.skinledger.com/casemove/prices.json';
-  axios
-    .get(url)
-    .then(function (response) {
-      console.log(
-        'prices, response',
-        typeof response === 'object',
-        response !== null
-      );
-      if (typeof response === 'object' && response !== null) {
-        cas.setPricing(response.data, 'normal');
-      } else {
-        getPricesBackup(cas);
-      }
-    })
-    .catch(function (error) {
-      console.log('Error prices', error);
-      getPricesBackup(cas);
-    });
+async function loadPrices(cas) {
+  const pricesData = require('./backup/prices.json');
+  cas.setPricing(pricesData, 'local');
 }
 
 let currencyCodes = {
@@ -99,7 +74,7 @@ class runItems {
     this.steamUser = steamUser;
     this.seenItems = {};
     this.packageToSend = {};
-    getPrices(this);
+    loadPrices(this);
     getValue('pricing.currency').then((returnValue) => {
       if (returnValue == undefined) {
         setValue('pricing.currency', currencyCodes[steamUser.wallet.currency]);

@@ -1,106 +1,15 @@
-const fs = require('fs');
-const VDF = require('@node-steam/vdf');
-const axios = require('axios');
-
-const itemsLink = 'files.skinledger.com/counterstrike/items_game.txt';
-const translationsLink =
-  'https://files.skinledger.com/counterstrike/csgo_english.txt';
-
-function fileCatcher(endNote) {
-  return `${csgo_install_directory}${endNote}`;
-}
-
-async function fileGetError(items) {
+function loadLocalData(instance) {
   let csgoEnglish = require('./itemsBackupFiles/csgo_english.json');
-  items.setTranslations(csgoEnglish, 'Error');
+  instance.setTranslations(csgoEnglish, 'local');
   let itemsGame = require('./itemsBackupFiles/items_game.json');
-  items.setCSGOItems(itemsGame);
-}
-
-async function getTranslations(items) {
-  try {
-    const returnValue = await axios.get(translationsLink).then((response) => {
-      const finalDict = {};
-      const data = response.data;
-      var ks = data.split(/\n/);
-      ks.forEach(function (value) {
-        // Iterate hits
-        var test = value.match(/"(.*?)"/g);
-        if (test && test[1]) {
-          finalDict[test[0].replaceAll('"', '').toLowerCase()] = test[1];
-        }
-      });
-
-      return finalDict;
-    });
-    returnValue['stickerkit_cs20_boost_holo'];
-    items.setTranslations(returnValue, 'normal');
-  } catch (err) {
-    console.log('Error occurred during translation parsing');
-    fileGetError(items);
-  }
-}
-
-function updateItemsLoop(jsonData, keyToRun) {
-  const returnDict = {};
-  for (const [key, value] of Object.entries(jsonData['items_game'])) {
-    if (key == keyToRun) {
-      for (const [subKey, subValue] of Object.entries(value)) {
-        returnDict[subKey] = subValue;
-      }
-    }
-  }
-  return returnDict;
-}
-
-async function updateItems(items) {
-  try {
-    const returnValue = await axios.get(itemsLink).then((response) => {
-      const dict_to_write = {
-        items: {},
-        paint_kits: {},
-        prefabs: {},
-        sticker_kits: {},
-        casket_icons: {},
-      };
-      const data = response.data;
-      const jsonData = VDF.parse(data);
-      dict_to_write['items'] = updateItemsLoop(jsonData, 'items');
-      dict_to_write['paint_kits'] = updateItemsLoop(jsonData, 'paint_kits');
-      dict_to_write['prefabs'] = updateItemsLoop(jsonData, 'prefabs');
-      dict_to_write['sticker_kits'] = updateItemsLoop(jsonData, 'sticker_kits');
-      dict_to_write['music_kits'] = updateItemsLoop(
-        jsonData,
-        'music_definitions'
-      );
-      dict_to_write['graffiti_tints'] = updateItemsLoop(
-        jsonData,
-        'graffiti_tints'
-      );
-
-      dict_to_write['casket_icons'] = updateItemsLoop(
-        jsonData,
-        'alternate_icons2'
-      )['casket_icons'];
-
-      return dict_to_write;
-    });
-    // Validate data
-    returnValue['items'][1209];
-    items.setCSGOItems(returnValue);
-  } catch (err) {
-    console.log('Error occurred during items parsing');
-    fileGetError(items);
-  }
+  instance.setCSGOItems(itemsGame);
 }
 
 class items {
   translation = {};
   csgoItems = {};
   constructor() {
-    fileGetError(this);
-    getTranslations(this);
-    updateItems(this);
+    loadLocalData(this);
   }
 
   setCSGOItems(value) {
