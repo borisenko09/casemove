@@ -42,7 +42,6 @@
       "node_modules",
       "package.json"
     ],
-    "afterSign": ".erb/scripts/notarize.js",
     "mac": {
       "target": {
         "target": "default",
@@ -74,8 +73,7 @@
     "win": {
       "target": [
         "nsis"
-      ],
-      "sign": "./sign.js"
+      ]
     },
     "linux": {
       "target": [
@@ -93,7 +91,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "nombersDev",
+      "owner": "borisenko09",
       "repo": "casemove"
     }
   },
@@ -138,6 +136,7 @@
     "@types/history": "4.7.9",
     "@types/jest": "^27.0.2",
     "@types/lodash": "^4.14.184",
+    "@types/minimatch": "^5.1.2",
     "@types/node": "^16.11.6",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
